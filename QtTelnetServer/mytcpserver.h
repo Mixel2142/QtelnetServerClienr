@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <myprocessbuilder.h>
+#include <QProcess>
 
 class MyTcpServer : public QObject
 {

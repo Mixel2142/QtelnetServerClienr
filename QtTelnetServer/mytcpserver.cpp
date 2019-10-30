@@ -30,17 +30,17 @@ void MyTcpServer::slotNewConnection()
 
 void MyTcpServer::slotServerRead()
 {
-
     QProcess mProcess;
+    mProcess.waitForStarted();
     QByteArray array;
     while(mTcpSocket->bytesAvailable()>0)
     {
         array.append(mTcpSocket->readAll());
     }
 
-    QString strCommand = "";
-#ifdef Q_WS_WIN
-    strCommand = "cmd /C ";
+    QString strCommand;
+#ifdef Q_OS_WIN
+    strCommand.append("cmd /C ");
 #endif
     strCommand.append(array);
 
@@ -50,11 +50,10 @@ void MyTcpServer::slotServerRead()
     }
 
     mProcess.start(strCommand);
-
     mProcess.waitForFinished();
 
-    QByteArray outArray = mProcess.readAllStandardError() + " ";
-    outArray.append(mProcess.readAllStandardOutput()+" ");
+    QByteArray outArray = mProcess.readAllStandardError() + '\n';
+    outArray.append(mProcess.readAllStandardOutput());
     mTcpSocket->write(outArray);
     mProcess.close();
     mProcess.kill();
