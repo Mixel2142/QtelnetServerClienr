@@ -1,7 +1,7 @@
 #include "mytcpsocket.h"
 
 
-MyTcpSocket::MyTcpSocket(QObject *parent, QString host, quint16 port) : QObject(parent)
+MyTcpSocket::MyTcpSocket(QString host, quint16 port) : QObject(nullptr)
 {
     mTcpSocket = new QTcpSocket(this);
 

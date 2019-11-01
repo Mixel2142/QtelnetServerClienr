@@ -9,7 +9,7 @@ class MyTcpSocket : public QObject
 {
     Q_OBJECT
 public:
-    explicit MyTcpSocket(QObject *parent = nullptr, QString str = "127.0.0.1", quint16 port = 6000);
+    explicit MyTcpSocket(QString str = "127.0.0.1", quint16 port = 6000);
 
 signals:
 
