@@ -4,7 +4,6 @@
 MyTcpSocket::MyTcpSocket(QObject *parent, QString host, quint16 port) : QObject(parent)
 {
     mTcpSocket = new QTcpSocket(this);
-    consoleReader = new ConsoleReader(this);
 
     mTcpSocket->connectToHost(host, port);
 
@@ -14,7 +13,7 @@ MyTcpSocket::MyTcpSocket(QObject *parent, QString host, quint16 port) : QObject(
             this,         SLOT(slotError(QAbstractSocket::SocketError))
            );
 
-    connect(consoleReader,SIGNAL(textReceived(QString)),this,SLOT(slotSendToServer(QString)));
+
 
 }
 

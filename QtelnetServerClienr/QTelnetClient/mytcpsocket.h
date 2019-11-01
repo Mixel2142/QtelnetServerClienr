@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QByteArray>
-#include "consolereader.h"
 
 class MyTcpSocket : public QObject
 {
@@ -23,7 +22,6 @@ public slots:
 
 private:
     QTcpSocket *mTcpSocket;
-    ConsoleReader *consoleReader;
 };
 
 #endif // MYTCPSOCKET_H

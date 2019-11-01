@@ -20,7 +20,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     mytcpsocket.cpp \
-    consolereader.cpp
+    console.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -29,4 +29,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     mytcpsocket.h \
-    consolereader.h
+    console.h
