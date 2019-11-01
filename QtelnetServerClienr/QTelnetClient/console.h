@@ -11,6 +11,7 @@
 #include <Windows.h>
 #else
 #include <QSocketNotifier>
+#include <unistd.h>
 #endif
 
 
