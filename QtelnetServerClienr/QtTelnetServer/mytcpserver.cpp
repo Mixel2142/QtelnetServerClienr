@@ -9,7 +9,7 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent)
 
     connect(mTcpServer, &QTcpServer::newConnection, this, &MyTcpServer::slotNewConnection);
 
-    if(!mTcpServer->listen(QHostAddress::Any, 6000)){// порт 23 не получается
+    if(!mTcpServer->listen(QHostAddress::LocalHost, 6000)){// порт 23 не получается
         qDebug() << "server is not started";
     } else {
         qDebug() << "server is started";
@@ -19,23 +19,26 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent)
 
 void MyTcpServer::slotNewConnection()
 {
-    qDebug() << "New connection!\n";
+    QTcpSocket* clientSocket = mTcpServer->nextPendingConnection();
+    qint64 mId = clientSocket->socketDescriptor();
 
-    mTcpSocket = mTcpServer->nextPendingConnection();
-    mTcpSocket->write("Hello, World!!! I am telnet server!\r\n");
+    qDebug() << "New connection: " << mId;
+    clientSocket->write("Hello, World!!! I am telnet server!\r\n");
 
-    connect(mTcpSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead);
-    connect(mTcpSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected);
+    connect(clientSocket,&QTcpSocket::readyRead,this, &MyTcpServer::slotServerRead);
+    connect(clientSocket,SIGNAL(disconnected()),this, SLOT(slotClientDisconnected()));
+
 }
 
 void MyTcpServer::slotServerRead()
 {
-    QProcess mProcess;
-    mProcess.waitForStarted();
+    QProcess proc;
+    proc.waitForStarted();
     QByteArray array;
-    while(mTcpSocket->bytesAvailable()>0)
+    QTcpSocket* clientSocket = (QTcpSocket*)sender();
+    while(clientSocket->bytesAvailable()>0)
     {
-        array.append(mTcpSocket->readAll());
+        array.append(clientSocket->readAll());
     }
 
     QString strCommand;
@@ -44,25 +47,23 @@ void MyTcpServer::slotServerRead()
 #endif
     strCommand.append(array);
 
+    proc.start(strCommand);
+    proc.waitForFinished();
+
     if(strCommand.contains("exit") || strCommand.contains("quit")) {
-        mTcpSocket->close();
-        mProcess.close();
+        clientSocket->close();
     }
 
-    mProcess.start(strCommand);
-    mProcess.waitForFinished();
-
-    QByteArray outArray = mProcess.readAllStandardError() + '\n';
-    outArray.append(mProcess.readAllStandardOutput());
-    mTcpSocket->write(outArray);
-    mProcess.close();
-    mProcess.kill();
-
+    QByteArray outArray = proc.readAllStandardError() + '\n';
+    outArray.append(proc.readAllStandardOutput());
+    clientSocket->write(outArray);
 }
 
 
 void MyTcpServer::slotClientDisconnected()
 {
-    qDebug() << "Diconnect";
-    mTcpSocket->close();
+    QTcpSocket* clientSocket = (QTcpSocket*)sender();
+    qint64 idusersocs = clientSocket->socketDescriptor();
+    qDebug() << "Diconnect: " << idusersocs;
+    clientSocket->close();
 }

@@ -16,10 +16,10 @@ public slots:
     void slotNewConnection();
     void slotServerRead();
     void slotClientDisconnected();
-
+signals:
+    void text(QByteArray data);
 private:
     QTcpServer *mTcpServer;
-    QTcpSocket *mTcpSocket;
 };
 
 #endif // MYTCPSERVER_H
